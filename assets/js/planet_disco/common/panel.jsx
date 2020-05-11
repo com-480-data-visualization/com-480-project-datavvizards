@@ -1,23 +1,51 @@
-import * as THREE from 'three/src/Three'
-import React, { useState, useRef } from 'react'
-import { useThree, useFrame } from 'react-three-fiber'
-// import { Dom } from 'react-three-fiber'
+import React from 'react'
+import CitySelector from './city_selector'
+import { Paper, Typography, ButtonGroup, Button } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { views } from './views'
 
-// export default () => {
-//   return <Dom>
-//     <div style={{ color: 'white', transform: 'translate3d(-100%,100%,0)', background: "white" }}>ХУЙ</div>
-//   </Dom>  
-// }
+import {
+  Language as PlanetIcon,
+  LocationCity as CitiesIcon,
+  MusicNote as GenresIcon
+} from '@material-ui/icons'
 
-export default () => {
-  const scene = useRef()
-  const {camera} = useThree()
-  useFrame(({ gl }) => void ((gl.autoClear = false), gl.clearDepth(), gl.render(scene.current, camera)), 10)
-  
-  return <scene ref={scene}>
-    <mesh position={[1, 1, 1]}>
-      <sphereBufferGeometry attach="geometry" args={[3, 64, 64]} />
-      <meshBasicMaterial attach="material" color='hotpink' />
-    </mesh>
-  </scene>
+const useStyles = makeStyles((theme) => ({
+  panel: {
+    padding: theme.spacing(2),
+    pointerEvents: "auto",
+    '& h1': {
+      marginBottom: theme.spacing(2)
+    },
+    // backdropFilter: "blur(6px)",
+    // backfaceVisibility: "hidden"
+  },
+  switch: {
+    marginBottom: theme.spacing(3)
+  }
+}))
+
+export default ({view, onCitySelect, onViewChange}) => {  
+  const classes = useStyles()
+
+  return <Paper className={classes.panel}>
+    <Typography variant="h4" component="h1">
+     <b>Disco Planet  {String.fromCodePoint(0x1F30D)}</b>
+    </Typography>
+
+    <ButtonGroup className={classes.switch} fullWidth size="large">
+      <Button variant={view == views.PLANET ? "contained" : "outlined"} onClick={() => onViewChange(views.PLANET)}>
+        <PlanetIcon />
+      </Button>
+      <Button variant={view == views.CITY ? "contained" : "outlined"} onClick={() => onViewChange(views.CITY)}>
+        <CitiesIcon />
+      </Button>
+      <Button>
+        <GenresIcon />
+      </Button>
+    </ButtonGroup>
+
+    <CitySelector onChange={onCitySelect} />
+
+  </Paper>
 }

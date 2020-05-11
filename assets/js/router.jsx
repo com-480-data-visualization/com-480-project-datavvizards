@@ -13,9 +13,6 @@ export default () => (
   <Router>
     <ApolloProvider client={client}>
       <Switch>
-        <Route path="/dashboard">
-          <Dashboard />
-        </Route>
         <Route path="/">
           <PlanetDisco />
         </Route>

@@ -16,10 +16,12 @@ defmodule SpotifyTrackerWeb.Schema do
     field :followers, non_null(:integer)
     field :monthly_listeners, non_null(:integer)
 
-    # many_to_many :genres, Genre, join_through: "artist_genres"
-    # many_to_many :cities, City, join_through: "artist_cities"
-    # has_many :images, Image
-    field :genres, non_null(list_of(non_null(:genre))),  resolve: dataloader(Context)
+    field :images, non_null(list_of(non_null(:image))) do
+      arg :height, :integer
+      arg :width, :integer
+      resolve dataloader(Context)
+    end
+    field :genres, non_null(list_of(non_null(:genre))), resolve: dataloader(Context)
   end
   paginated(:artist)
 
@@ -28,7 +30,15 @@ defmodule SpotifyTrackerWeb.Schema do
     field :name, non_null(:string)
   end
 
+  object :image do
+    field :id, :id
+    field :path, :string
+    field :width, :integer
+    field :height, :integer
+  end
+
   object :city do
+    field :id, :id
     field :city,          non_null(:string)
     field :region,        :string
     field :country,       non_null(:string)
@@ -36,6 +46,8 @@ defmodule SpotifyTrackerWeb.Schema do
     field :human_country, non_null(:string)
     field :population,    non_null(:integer)
     field :coord,         non_null(:location)
+    field :em_coord,      :location
+    field :geohash,       :float
 
     # many_to_many :artists, Artist, join_through: "artist_cities"
   end
@@ -46,12 +58,20 @@ defmodule SpotifyTrackerWeb.Schema do
     field :artists, :paginated_artist do
       arg :cursor, :string
       arg :limit, :integer
+      arg :by_city, :id
+      arg :sort_by, :string
+      arg :min_listeners, :integer
       resolve &Resolvers.get_artists/3
     end
 
+    @desc "Cities entry point, returns list of cities"
     field :cities, :paginated_city do
       arg :cursor, :string
       arg :limit, :integer
+      arg :q, :string
+      arg :by_id, :string
+      arg :has_embedding, :boolean
+      arg :sort_by, :string
       resolve &Resolvers.get_cities/3
     end
 
