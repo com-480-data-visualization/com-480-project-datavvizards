@@ -179,7 +179,7 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
           <CardContent className={classes.content}>
             {currentAudio ?
               <Fragment>
-                <div onClick={pause}>
+                <div onClick={() => setPlaying(false)}>
                   <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} />
                   <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} />
                 </div>
