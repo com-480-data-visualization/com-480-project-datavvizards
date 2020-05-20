@@ -78,32 +78,22 @@ class CitySimilarities extends React.Component {
     this.currentK = transform.k;
     window.requestAnimationFrame(() => {
       this.ctx.clearRect(0, 0, this.width, this.height);
-      this.hiddenCtx.clearRect(0, 0, this.width, this.height);
+      // this.hiddenCtx.clearRect(0, 0, this.width, this.height);
 
       //Calculate which dots are in the viewport
+      const padding = 10;
       let visible = this.data.filter((d) => {
         let newX = d.cx * transform.k + transform.x;
         let newY = d.cy * transform.k + transform.y;
-        d.dotVisible = (newX > 0 && newX < this.width) && (newY > 0 && newY < this.height)
+        d.dotVisible = (newX > -padding && newX < this.width + padding) && (newY > -padding && newY < this.height + padding)
         return d.dotVisible
       })
 
-      /*
-        Draw the hidden bounding boxes around the text labels that will
-        be used to determine what city a user has clicked on
-        */
-      CitySimilarities.rescaleContext(this.hiddenCtx, transform);
-      this.hiddenCtx.clearRect(0, 0, this.width, this.height);
-      let layout = this.textLayout.atScale(this.currentK).calculateTextLayout(visible);
-      this.textLayout.drawBoxes(layout);
-      this.hiddenCtx.restore();
-
-      //Draw the visible parts 
+      this.textLayout.withTransform(transform).calculateTextLayout(visible);
       CitySimilarities.rescaleContext(this.ctx, transform);
       this.pointsLayout.atScale(this.currentK).drawPoints(visible);
-      this.textLayout.drawLabels(layout);
+      this.textLayout.drawLabels();
       this.ctx.restore();
-
     });
   }
 
@@ -126,7 +116,7 @@ class CitySimilarities extends React.Component {
     // Scale the range of the data
     const labelScale = d3.scaleLinear().range(labelExtent).domain(d3.extent(data, (d) => +d.rank));
     const ex = d3.extent(data, (d) => +d.population);
-    const populationRadius = d3.scaleLinear().domain(ex).range([3, 10]);
+    const populationRadius = d3.scaleLog().domain(ex).range([2, 6]);
 
     data.forEach(function (d) {
       d.population = +d.population;
@@ -194,6 +184,7 @@ class CitySimilarities extends React.Component {
           })
             .then((res) =>
               this.props.onCitySelect(res.data.cities.entries[0])
+              // this.handleSearch(d.id)
             )
         }
       });
@@ -262,7 +253,7 @@ class CitySimilarities extends React.Component {
     if (city) {
       d3.select(this.ctx.canvas).transition().duration(1000).call(
         this.zoom.transform,
-        d3.zoomIdentity.translate(this.width / 2, this.height / 2).scale(10).translate(-city.cx, -city.cy)
+        d3.zoomIdentity.translate(this.width / 2, this.height / 2).scale(Math.max(10, this.currentK)).translate(-city.cx, -city.cy)
       );
     }
   }

@@ -1,3 +1,4 @@
+
 const labelOffsetY = -8;
 
 export class TextUtils {
@@ -8,21 +9,28 @@ export class TextUtils {
         this.hiddenCtx = hiddenCtx;
     }
 
-    atScale = (currentK) => {
-        this.currentK = currentK;
-        return this
+    // atScale = (currentK) => {
+    //     this.currentK = currentK;
+    //     return this
+    // }
+
+    withTransform = (transform) => {
+        this.currentK = transform.k;
+        this.transform = transform;
+        return this;
     }
 
-    drawBoxes = (layout) => {
-        layout.forEach(l => {
-            let color = "#" + (+l.data.id).toString(16).padStart(6, '0') //Translate city id into an rgba color
-            this.hiddenCtx.fillStyle = color
-            this.hiddenCtx.fillRect(l.topLeft.x, l.topLeft.y, l.bottomRight.x - l.topLeft.x, l.bottomRight.y - l.topLeft.y)
-        })
-    }
+    // drawBoxes = (layout) => {
+    //     layout.forEach(l => {
+    //         let color = "#" + (+l.data.id).toString(16).padStart(6, '0') //Translate city id into an rgba color
+    //         this.hiddenCtx.fillStyle = color
+    //         this.hiddenCtx.fillRect(l.topLeft.x, l.topLeft.y, l.bottomRight.x - l.topLeft.x, l.bottomRight.y - l.topLeft.y)
+    //     })
+    // }
 
     drawLabel = (layout) => {
         let d = layout.data;
+        this.ctx.strokeText(d.city, layout.topLeft.x, layout.bottomRight.y);
         this.ctx.fillText(d.city, layout.topLeft.x, layout.bottomRight.y);
         if (d.highlight) {
             this.ctx.fillRect(layout.topLeft.x,
@@ -32,9 +40,11 @@ export class TextUtils {
         }
     }
 
-    drawLabels = (layout) => {
+    drawLabels = () => {
+        this.ctx.lineWidth = 6 /(Math.pow(this.currentK, 1.8));
+        this.ctx.strokeStyle = "rgb(11, 19, 35)";
         this.ctx.fillStyle = "white";
-        layout.forEach(this.drawLabel)
+        this.layout.forEach(this.drawLabel)
     }
 
 
@@ -129,19 +139,31 @@ export class TextUtils {
                 .sort((a, b) => a.rank - b.rank))
 
         const textLayout = this.layOut(laidOut, []);
-        return this.layOut(toLayout, textLayout)
+        this.layout = this.layOut(toLayout, textLayout)
     }
 
-    //Translate an rgba value from a bounding box of a label back to a city id
-    static rgbaToId = (rgba) => {
-        return (rgba[0] << 16) + (rgba[1] << 8) + rgba[2];
+    // //Translate an rgba value from a bounding box of a label back to a city id
+    // static rgbaToId = (rgba) => {
+    //     return (rgba[0] << 16) + (rgba[1] << 8) + rgba[2];
+    // }
+
+    insideTextRectangle = (point, textLayout) => {
+        return (point.x > textLayout.topLeft.x && point.x < textLayout.bottomRight.x) &&
+            (point.y > textLayout.topLeft.y && point.y < textLayout.bottomRight.y)
     }
 
     findUnderMouseId = (e) => {
         //Figure out where the mouse click occurred.
-        const mouseX = e.layerX;
-        const mouseY = e.layerY;
-        const rgba = this.hiddenCtx.getImageData(mouseX, mouseY, 1, 1).data;
-        return TextUtils.rgbaToId(rgba);
+        const mouseX = (e.layerX - this.transform.x) / this.currentK;
+        const mouseY = (e.layerY - this.transform.y) / this.currentK
+        const point = { x: mouseX, y: mouseY }
+
+        const found = this.layout.find(t => this.insideTextRectangle(point, t))
+        if (found)
+            return found.data.id;
+
+        return null;
+        // const rgba = this.hiddenCtx.getImageData(mouseX, mouseY, 1, 1).data;
+        // return TextUtils.rgbaToId(rgba);
     }
 }
