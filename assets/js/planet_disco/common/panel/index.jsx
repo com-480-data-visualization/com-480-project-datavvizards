@@ -38,8 +38,8 @@ export default ({ onCitySelect }) => {
   const buttonVariant = (path) => location.pathname === path ? 'contained' : 'outlined'
 
   return <Paper className={classes.panel}>
-    <Typography variant="h4" component="h1">
-      Planet Disco
+    <Typography variant="h4" component="h1" style={{ fontWeight: 600 }}>
+      Disco Planet 
     </Typography>
 
     <ButtonGroup className={classes.switch} fullWidth size="large">

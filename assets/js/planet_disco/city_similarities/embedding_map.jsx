@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useContext, useMemo } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import { Box } from '@material-ui/core'
 import Map from './geo_map'
 import * as d3 from 'd3'
 import { TextUtils } from './text_layout';
@@ -11,6 +12,7 @@ import { useApolloClient } from '@apollo/react-hooks'
 
 import { FragmentWormhole } from '../common/wormhole'
 import { StoreContext } from '../common/store'
+import Description  from './description'
 
 const zoomExtent = [0.7, 32];
 const labelExtent = [1, 10];
@@ -47,6 +49,19 @@ const useStyles = makeStyles(theme => ({
   },
   cities: {
     height: '80vh',
+  },
+  panelContainer: {
+    display: "flex",
+    flexDirection: 'column',
+    justifyContent: "space-between",
+    height: "100%",
+  },
+  panelDescription: {
+    flex: "2 1 20%",
+    marginBottom: 20,
+  },
+  panelMap: {
+    flex: "1 1 20%"
   }
 }));
 
@@ -235,7 +250,10 @@ export default ({ data }) => {
   return (
     <React.Fragment>
       {panel && <FragmentWormhole to={panel}>
-        <Map data={data} redraw={() => redraw()} />
+        <Box className={classes.panelContainer}>
+          <Description className={classes.panelDescription} />
+          <Map className={classes.panelMap} data={data} redraw={() => redraw()} />
+        </Box>
       </FragmentWormhole>}
 
       <div className={classes.root} ref={divRef}>

@@ -1,9 +1,27 @@
 import React, { Fragment, Component, createRef } from 'react'
 import * as topojson from "topojson-client";
-import { Paper, Box, Button } from '@material-ui/core'
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles'
+import { Card, CardMedia, CardActions, Paper, Box, Button } from '@material-ui/core'
 import * as d3 from 'd3'
 
-export default class Map extends Component {
+const styles = theme => ({
+  geoMapCard: {
+    height: "100%",
+  },
+  geoMapMedia: {
+    height: "80%",
+  },
+  geoMapContainer: {
+    height: "50%",
+  },
+  map: {
+    height: "100%",
+    width: "100%",
+  }
+});
+
+class Map extends Component {
   constructor(props) {
     super(props);
     this.gRef = createRef();
@@ -89,21 +107,35 @@ export default class Map extends Component {
 
   render() {
     return (
-      <Paper>
-        <svg ref={this.svgRef} width="100%" height="90%" viewBox="0 0 300 400">
-          <g ref={this.gRef}></g>
-        </svg>
-        <Box m={2}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={this.toggleBrush}
-          >
-            Enable {this.state.brush ? "move" : "brush"}
-          </Button>
-        </Box>
-      </Paper>
+      <div className={this.props.classes.geoMapContainer}>
+        <Card className={this.props.classes.geoMapCard}>
+          <CardMedia className={this.props.classes.geoMapMedia}>
+            <svg ref={this.svgRef} className={this.props.classes.map} viewBox="-10 -70 300 400">
+              <g ref={this.gRef}></g>
+            </svg>
+          </CardMedia>
+          <CardActions>
+            <Box m={2}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={this.toggleBrush}
+                style ={{textDecoration: "none"}}
+              >
+                Enable {this.state.brush ? "move" : "brush"}
+              </Button>
+            </Box>
+          </CardActions>
+        </Card>
+      </div>
     );
   }
 }
+
+
+Map.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Map);
