@@ -8,7 +8,7 @@ import { StoreContextProvider } from './common/store'
 import { ContextForward } from './common/wormhole'
 import PlanetView from './planet_view'
 import GenresView from './genres_view'
-import CitiesView from './cities_view'
+import CitySimilarities from './city_similarities'
 import Overlay from './common/overlay'
 
 const theme = createMuiTheme({
@@ -25,21 +25,13 @@ export default ({ match, history }) => {
   return <StoreContextProvider>
     <ThemeProvider theme={theme}>
       <Overlay />
-
-      <ContextForward wrapper={<Canvas
-          className='main-canvas'
-          shadowMap
-          updateDefaultCamera
-          resize={{debounce: { scroll: 50, resize: 50 }}}
-        />}>
         <Router history={history}>
           <Switch>
-            <Route path={match.url + "cities"} component={CitiesView} />
+            <Route path={match.url + "cities"} component={CitySimilarities} />
             <Route path={match.url + "genres"} component={GenresView} />
             <Route path={match.url} component={PlanetView} />
           </Switch>
         </Router>
-      </ContextForward>
     </ThemeProvider>
   </StoreContextProvider>
 }

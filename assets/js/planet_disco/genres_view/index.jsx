@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import { interpolateSpectral } from 'd3'
 import { StoreContext } from '../common/store'
-import { ContextWormhole } from '../common/wormhole'
+import { ContextWormhole, ContextForward } from '../common/wormhole'
 import { computeDirection } from '../common/utils'
 import GenreSelector from '../common/panel/genre_selector'
 import Controls from '../common/controls/basic'
@@ -13,6 +13,7 @@ import GenreCloud from './genre_cloud'
 import Effects from './effects'
 import TrackingLight from './tracking_light'
 import GenrePanel from './genre_panel'
+import { Canvas } from 'react-three-fiber'
 
 const GENRES = gql`{
   clusteredGenres {
@@ -79,53 +80,63 @@ export default () => {
     return cm
   }, [data])
 
-  return <scene>
-    {/* <Effects /> */}
 
-    {panel && <ContextWormhole to={panel}>
-      <Typography variant="subtitle1">
-        Genre clusters
+  return (
+    <ContextForward wrapper={<Canvas
+      className='main-canvas'
+      shadowMap
+      updateDefaultCamera
+      resize={{ debounce: { scroll: 50, resize: 50 } }}
+    />}>
+      <scene>
+        {/* <Effects /> */}
+
+        {panel && <ContextWormhole to={panel}>
+          <Typography variant="subtitle1">
+            Genre clusters
       </Typography>
 
-      <Typography variant="caption" className={classes.header}>
-        Pick a master genre to learn more about other genres in the cluster
+          <Typography variant="caption" className={classes.header}>
+            Pick a master genre to learn more about other genres in the cluster
       </Typography>
 
-      <GenreSelector
-        colorMap={clusterId ? { [clusterId]: colorMap[clusterId] } : {}}
-        selectGenre={(g) => setCluster(clusterId == g.id ? undefined : g.id)}
-      />
-    </ContextWormhole>}
+          <GenreSelector
+            colorMap={clusterId ? { [clusterId]: colorMap[clusterId] } : {}}
+            selectGenre={(g) => setCluster(clusterId == g.id ? undefined : g.id)}
+          />
+        </ContextWormhole>}
 
-    {sidebar && <ContextWormhole to={sidebar}>
-      {currentGenre && <GenrePanel genre={currentGenre} selectGenre={setCurrentGenre} /> || <div></div>}
-    </ContextWormhole>}
+        {sidebar && <ContextWormhole to={sidebar}>
+          {currentGenre && <GenrePanel genre={currentGenre} selectGenre={setCurrentGenre} /> || <div></div>}
+        </ContextWormhole>}
 
-    <Controls
-      maxDistance={80}
-      minDistance={5}
-      { ...clusterId ? centroids[clusterId] : initCoord }
-      { ...clusterId ? computeDirection(centroids[clusterId]) : initDirection}
-      distance={clusterId ? 20 : 80}
-    />
-    <ambientLight intensity={1} />
-    <spotLight
-      intensity={0.4}
-      lookAt={[0, 0, 0]}
-      position={[50, 50, 500]}
-    />
-    <TrackingLight
-      { ...clusterId ? centroids[clusterId] : initCoord }
-      color={clusterId ? colorMap[clusterId] : '#000000'}
-    />
-    {data && <GenreCloud
-      centroids={centroids}
-      genres={data.clusteredGenres}
-      selectedCluster={clusterId}
-      colorMap={colorMap}
-      selectCluster={setCluster}
-      selectGenre={setCurrentGenre}
-      currentGenre={currentGenre}
-    />}
-  </scene>
+        <Controls
+          maxDistance={80}
+          minDistance={5}
+          {...clusterId ? centroids[clusterId] : initCoord}
+          {...clusterId ? computeDirection(centroids[clusterId]) : initDirection}
+          distance={clusterId ? 20 : 80}
+        />
+        <ambientLight intensity={1} />
+        <spotLight
+          intensity={0.4}
+          lookAt={[0, 0, 0]}
+          position={[50, 50, 500]}
+        />
+        <TrackingLight
+          {...clusterId ? centroids[clusterId] : initCoord}
+          color={clusterId ? colorMap[clusterId] : '#000000'}
+        />
+        {data && <GenreCloud
+          centroids={centroids}
+          genres={data.clusteredGenres}
+          selectedCluster={clusterId}
+          colorMap={colorMap}
+          selectCluster={setCluster}
+          selectGenre={setCurrentGenre}
+          currentGenre={currentGenre}
+        />}
+      </scene>
+    </ContextForward>
+  )
 }

@@ -35,6 +35,12 @@ export const WormholeBase = ({ name, ...props }) => {
   return <div ref={base} {...props}></div>
 }
 
+export const FragmentWormhole = ({ to, children }) => {
+  return <React.Fragment>
+    {createPortal(children, to)}
+  </React.Fragment>
+}
+
 export const Wormhole = ({ to, children }) => {
   return <HTML>
     {createPortal(children, to)}

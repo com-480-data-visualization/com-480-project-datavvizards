@@ -2,10 +2,10 @@ import React, { useState, useContext } from 'react'
 import { Paper, Typography, Button, ButtonGroup, IconButton } from '@material-ui/core'
 import { Close as CloseIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
-import TopArtists from '../common/top_artists'
-import TopGenres from '../common/top_genres'
-import { StoreContext } from '../common/store'
-import Similar from '../common/similar_cities'
+import TopArtists from './top_artists'
+import TopGenres from './top_genres'
+import { StoreContext } from './store'
+import Similar from './similar_cities'
 
 const useStyles = makeStyles((theme) => ({
   city: {
