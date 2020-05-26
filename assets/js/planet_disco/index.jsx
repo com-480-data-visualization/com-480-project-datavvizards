@@ -1,15 +1,14 @@
 import React from 'react'
 import { Router } from 'react-router'
 import { Switch, Route } from 'react-router-dom'
-import { Canvas } from 'react-three-fiber'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { indigo } from '@material-ui/core/colors'
 import { StoreContextProvider } from './common/store'
-import { ContextForward } from './common/wormhole'
 import PlanetView from './planet_view'
 import GenresView from './genres_view'
 import CitySimilarities from './city_similarities'
 import Overlay from './common/overlay'
+import SpotifySimpleLogin from './common/spotify_simple_login'
 
 const theme = createMuiTheme({
   palette: {
@@ -21,17 +20,32 @@ const theme = createMuiTheme({
   }
 })
 
+
+class DebugRouter extends Router {
+  constructor(props){
+    super(props);
+    console.log('initial history is: ', JSON.stringify(this.history, null,2))
+    this.props.history.listen((location, action)=>{
+      console.log(
+        `The current URL is ${location.pathname}${location.search}${location.hash}`
+      )
+      console.log(`The last navigation action was ${action}`, JSON.stringify(this.history, null,2));
+    });
+  }
+}
+
 export default ({ match, history }) => {
   return <StoreContextProvider>
     <ThemeProvider theme={theme}>
       <Overlay />
-        <Router history={history}>
+        <DebugRouter history={history}>
           <Switch>
-            <Route path={match.url + "cities"} component={CitySimilarities} />
-            <Route path={match.url + "genres"} component={GenresView} />
-            <Route path={match.url} component={PlanetView} />
+            <Route path="/login*" component={SpotifySimpleLogin} />
+            <Route path="/cities" component={CitySimilarities} />
+            <Route path="/genres" component={GenresView} />
+            <Route path="/" component={PlanetView} />
           </Switch>
-        </Router>
+        </DebugRouter>
     </ThemeProvider>
   </StoreContextProvider>
 }

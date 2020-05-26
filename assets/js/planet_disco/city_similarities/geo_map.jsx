@@ -13,7 +13,7 @@ const styles = theme => ({
     height: "80%",
   },
   geoMapContainer: {
-    height: "50%",
+    height: 350,
   },
   map: {
     height: "100%",

@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
   },
   children: {
-    maxHeight: "100%"
+    maxHeight: "100%",
+    height: "100%",
   },
   sidebar: {
     height: "100%",
