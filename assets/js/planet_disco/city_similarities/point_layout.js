@@ -1,7 +1,8 @@
 
 export class PointsLayout {
-    constructor(ctx) {
+    constructor(ctx, transform) {
         this.ctx = ctx;
+        this.transform = transform;
     }
 
     atScale = (currentK) => {

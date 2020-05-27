@@ -177,10 +177,10 @@ export default ({ data }) => {
     canvas = new EmbeddingsCanvas(d3Canvas).setDimensions(width, height);
     emCanvasRef.current = canvas
 
-    textLayout = new TextUtils(canvas.ctx)
+    textLayout = new TextUtils(canvas.ctx, d3.zoomIdentity)
     textLayoutRef.current = textLayout
 
-    pointsLayout = new PointsLayout(canvas.ctx)
+    pointsLayout = new PointsLayout(canvas.ctx, d3.zoomIdentity)
     pointsLayoutRef.current = pointsLayout
 
     registerEvents(canvasDom);

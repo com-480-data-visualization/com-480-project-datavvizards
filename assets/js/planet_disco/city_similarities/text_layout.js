@@ -4,8 +4,9 @@ const labelOffsetY = -8;
 export class TextUtils {
     static baseFontSize = 15;
 
-    constructor(ctx) {
+    constructor(ctx, transform) {
         this.ctx = ctx;
+        this.transform = transform;
     }
 
     withTransform = (transform) => {
