@@ -62,8 +62,8 @@ export default function PlayerLink({ href, content, header, playing }) {
   return (
     <div ref={elementRef} key={content}>
       {header ?
-        <Typography component="h5" variant="h5"> {getInner()} </Typography>
-        : <Typography variant="subtitle1" color="textSecondary"> {getInner()} </Typography>}
+        <Typography variant="body1"> {getInner()} </Typography>
+        : <Typography variant="subtitle2" color="textSecondary"> {getInner()} </Typography>}
     </div >
   )
 }

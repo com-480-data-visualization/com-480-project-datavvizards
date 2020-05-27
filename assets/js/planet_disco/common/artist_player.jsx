@@ -50,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(1),
   },
   playIcon: {
-    height: 38,
-    width: 38,
+    height: 34,
+    width: 34,
   },
   placeholder: {
     backgroundColor: theme.palette.background.default,

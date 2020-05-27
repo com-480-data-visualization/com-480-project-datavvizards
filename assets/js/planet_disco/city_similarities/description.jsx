@@ -5,8 +5,8 @@ import CityLink from './city_link'
 
 const useStyles = makeStyles((theme) => ({
     descriptionCard: {
-        height: "50%",
-        marginBottom: 20,
+        height: "100%",
+        marginBottom: 10,
         overflow: "hidden",
     },
     descriptionContentContainer: {

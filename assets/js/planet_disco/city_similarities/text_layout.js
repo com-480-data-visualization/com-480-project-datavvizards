@@ -147,7 +147,7 @@ export class TextUtils {
         const mouseY = (e.layerY - this.transform.y) / this.currentK
         const point = { x: mouseX, y: mouseY }
 
-        if (!this.layOut)
+        if (!this.layout)
             return null;
 
         const found = this.layout.find(t => this.insideTextRectangle(point, t))

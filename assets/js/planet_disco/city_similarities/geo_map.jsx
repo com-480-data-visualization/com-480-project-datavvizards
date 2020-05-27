@@ -2,7 +2,7 @@ import React, { Fragment, Component, createRef } from 'react'
 import * as topojson from "topojson-client";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles'
-import { Card, CardMedia, CardActions, Paper, Box, Button } from '@material-ui/core'
+import { Card, CardMedia, CardActions, Box, Button } from '@material-ui/core'
 import * as d3 from 'd3'
 
 const styles = theme => ({
@@ -10,7 +10,7 @@ const styles = theme => ({
     height: "100%",
   },
   geoMapMedia: {
-    height: "80%",
+    height: 250,
   },
   geoMapContainer: {
     height: 350,
@@ -42,8 +42,6 @@ class Map extends Component {
 
     const svg = d3.select(this.svgRef.current);
     const g = d3.select(this.gRef.current);
-    const width = this.svgRef.current.parentElement.clientWidth;
-    const height = this.svgRef.current.parentElement.clientHeight;
 
     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then((topology) => {
       g.selectAll("path")
@@ -114,7 +112,7 @@ class Map extends Component {
               <g ref={this.gRef}></g>
             </svg>
           </CardMedia>
-          <CardActions>
+          <CardActions style={{height: 100}}>
             <Box m={2}>
               <Button
                 type="submit"

@@ -14,7 +14,7 @@ import { FragmentWormhole } from '../common/wormhole'
 import { StoreContext } from '../common/store'
 import Description from './description'
 
-const zoomExtent = [0.7, 32];
+const zoomExtent = [0.7, 31];
 const labelExtent = [1, 10];
 
 const initialScale = 0.7;
