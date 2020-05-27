@@ -31,5 +31,5 @@ We expect that both the general audience and more inquiring music lovers will en
 
 
 ## Screen cast
-<a href="https://www.youtube.com/TODO" target="_blank"><img src="./images/videocover_discoplanet.png"
+<a href="https://www.youtube.com/" target="_blank"><img src="./images/videocover_discoplanet.png"
 alt="Disco Planet" width="625" height="400" border="10" /></a>
