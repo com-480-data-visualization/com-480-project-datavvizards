@@ -1,4 +1,4 @@
-<div style="background-color:#010023;" align="center">
+<div style="background:#010023;" align="center">
   <p>
   <img src="./images/disco_planet.gif" width="200" />
   </p>
