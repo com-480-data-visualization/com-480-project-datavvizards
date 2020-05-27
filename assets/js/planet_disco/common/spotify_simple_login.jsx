@@ -33,7 +33,6 @@ function getParameterByName(name) {
 
 function getAccessToken() {
   let token = getParameterByName('access_token');
-  console.log(token);
   return token;
 }
 
@@ -46,8 +45,6 @@ class SpotifySimpleLogin extends React.Component {
   render() {
     const { classes } = this.props;
     let accessToken = getAccessToken()
-    console.log("login: ")
-    console.log(accessToken)
 
     if (accessToken){
       window.localStorage.setItem('access_token', accessToken)

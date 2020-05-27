@@ -62,7 +62,7 @@ export default ({ data }) => {
   const canvasDomRef = useRef(null);
   const divRef = useRef(null);
   const classes = useStyles();
-  const citySelector = useMemo(() => new CitySelector(data), [data]);
+  const citySelector = useMemo(() => new CitySelector(data, d3.zoomIdentity), [data]);
 
   const currentK = useRef(initialScale);
   const inTransition = useRef(false);

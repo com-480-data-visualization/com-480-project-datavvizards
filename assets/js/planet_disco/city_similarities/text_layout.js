@@ -34,7 +34,7 @@ export class TextUtils {
 
     drawLabels = () => {
         // this.ctx.fillStyle = 'rgba(10, 19, 32, 0.8)';
-        this.ctx.fillStyle = "#060D20"
+        this.ctx.fillStyle = "#010219"
         this.layout.forEach(this.drawSurrondingBox)
         this.ctx.fillStyle = "white";
         this.layout.forEach(this.drawLabel)

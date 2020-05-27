@@ -19,7 +19,7 @@ const theme = createMuiTheme({
       main: '#433e60',
     },
     background: {
-      default: "#060D20",
+      default: "#010219",
       paper: 'rgba(71, 80, 98, 0.8)', // 'rgba(89, 100, 117, 0.6)' //'rgba(66, 66, 66, 0.6)'
     },
   },

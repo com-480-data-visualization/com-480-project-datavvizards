@@ -1,6 +1,7 @@
 export class CitySelector {
-    constructor(data) {
-        this.data = data
+    constructor(data, transform) {
+        this.data = data;
+        this.transform = transform;
     }
 
     //Remove selection from a city if one was selected
