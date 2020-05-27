@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     pointerEvents: "auto",
     maxHeight: "100%",
+    height: "100%",
     display: "flex",
     flex: "auto",
     flexDirection: "column",

@@ -10,7 +10,7 @@ const styles = theme => ({
     height: "100%",
   },
   geoMapMedia: {
-    height: 250,
+    height: 280,
   },
   geoMapContainer: {
     height: 350,
@@ -112,7 +112,7 @@ class Map extends Component {
               <g ref={this.gRef}></g>
             </svg>
           </CardMedia>
-          <CardActions style={{height: 100}}>
+          <CardActions style={{height: 70}}>
             <Box m={2}>
               <Button
                 type="submit"

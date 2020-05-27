@@ -43,21 +43,6 @@ export default ({ city, similarCities }) => {
       </Typography>
 
       {similarCities && similarCities.length > 0 && <Similar cities={similarCities} />}
-
-      {/* <ButtonGroup className={classes.selector} fullWidth size="large">
-        <Button
-          variant={selector == 'artists' ? 'contained' : 'outlined'}
-          onClick={() => setSelector('artists')}
-        >
-          Top artists
-        </Button>
-        <Button
-          variant={selector == 'genres' ? 'contained' : 'outlined'}
-          onClick={() => setSelector('genres')}
-        >
-          Top genres
-        </Button>
-      </ButtonGroup>             */}
     </div>
     {selector == 'artists' ? <TopArtists city={city} /> : <TopGenres city={city} />}
   </Paper>
