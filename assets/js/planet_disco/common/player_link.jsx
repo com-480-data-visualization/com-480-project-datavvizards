@@ -40,15 +40,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function PlayerLink({ href, content, header }) {
+export default function PlayerLink({ href, content, header, playing }) {
   const elementRef = useRef()
   const classes = useStyles()
 
   useEffect(() => {
-    if (isOverflown(elementRef.current)) {
+    if (playing && isOverflown(elementRef.current)) {
       elementRef.current.classList.add(classes.marqueeWrapper);
+    }else{
+      elementRef.current.classList.remove(classes.marqueeWrapper);
     }
-  }, [content])
+  }, [content, playing])
 
   const getInner = () => (
     <a className={classes.link} target="_blank" rel="noopener noreferrer"

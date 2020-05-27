@@ -20,32 +20,18 @@ const theme = createMuiTheme({
   }
 })
 
-
-class DebugRouter extends Router {
-  constructor(props){
-    super(props);
-    console.log('initial history is: ', JSON.stringify(this.history, null,2))
-    this.props.history.listen((location, action)=>{
-      console.log(
-        `The current URL is ${location.pathname}${location.search}${location.hash}`
-      )
-      console.log(`The last navigation action was ${action}`, JSON.stringify(this.history, null,2));
-    });
-  }
-}
-
 export default ({ match, history }) => {
   return <StoreContextProvider>
     <ThemeProvider theme={theme}>
       <Overlay />
-        <DebugRouter history={history}>
+        <Router history={history}>
           <Switch>
             <Route path="/login*" component={SpotifySimpleLogin} />
             <Route path="/cities" component={CitySimilarities} />
             <Route path="/genres" component={GenresView} />
             <Route path="/" component={PlanetView} />
           </Switch>
-        </DebugRouter>
+        </Router>
     </ThemeProvider>
   </StoreContextProvider>
 }

@@ -32,7 +32,9 @@ function getParameterByName(name) {
 }
 
 function getAccessToken() {
-  return getParameterByName('access_token');
+  let token = getParameterByName('access_token');
+  console.log(token);
+  return token;
 }
 
 class SpotifySimpleLogin extends React.Component {
@@ -44,10 +46,11 @@ class SpotifySimpleLogin extends React.Component {
   render() {
     const { classes } = this.props;
     let accessToken = getAccessToken()
+    console.log("login: ")
+    console.log(accessToken)
 
     if (accessToken){
       window.localStorage.setItem('access_token', accessToken)
-      console.log(accessToken)
     }
 
     return (
@@ -57,7 +60,7 @@ class SpotifySimpleLogin extends React.Component {
           :
           <Paper className={classes.root}>
             <div style={{ width: "auto", margin: "0 auto" }}>
-              <a href={`https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=http:%2F%2Flocalhost:4000/&scope=&response_type=token&state=`}>
+              <a href={`https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=http:%2F%2Flocalhost:4000/login&scope=&response_type=token&state=`}>
                 <Button
                   type="button"
                   variant="contained"

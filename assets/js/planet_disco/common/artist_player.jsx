@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment, useRef } from 'react'
 
 import { Paper } from '@material-ui/core'
 import SpotifySimpleLogin from './spotify_simple_login';
@@ -64,7 +64,8 @@ function getAccessToken() {
 
 export default function ArtistPlayer({ currentArtist, fetchNext }) {
   const classes = useStyles();
-  const [playing, setPlaying] = useState(true)
+  const audioPromiseRef = useRef(null)
+  const [playing, setPlaying] = useState(false)
   const [currentAudio, setAudioState] = useState(null)
   const [accessToken, setAccessToken] = useState(getAccessToken())
 
@@ -124,24 +125,24 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
 
   const controlPlayback = () => {
     if (playing) {
-      let a = play();
-      return () => {
-        if (a)
-          a.pause()
+      let [a, promise] = play();
+      if (a) {
+        return () => {
+          promise.then(() => a.pause()).catch((error) => console.log(error))
+        }
       }
+    } else {
+      pause()
     }
-    pause()
   }
 
   useEffect(() => {
     if (!currentAudio) {
       fetchNext()
     }
-    else
-      setPlaying(true)
   }, [currentAudio])
 
-  useEffect(() => controlPlayback());
+  useEffect(() => controlPlayback(), [currentArtist, playing, currentAudio]);
 
   const getCurrentAudio = () => {
     return currentAudio ? currentAudio.audio : null;
@@ -151,19 +152,23 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
     let a = getCurrentAudio();
     if (a) {
       a.addEventListener('ended', next);
-      a.play();
+      let promise = a.play();
+      audioPromiseRef.current = promise;
+      return [a, promise];
     }
-    return a;
+    return [null, null];
   }
 
   const pause = () => {
     let a = getCurrentAudio();
-    if (a)
-      a.pause();
+    if (a) {
+      let promise = audioPromiseRef.current;
+      if (promise)
+        promise.then(() => a.pause()).catch((error) => console.log(error))
+    }
   }
 
   const next = () => {
-    pause();
     fetchNext();
   }
 

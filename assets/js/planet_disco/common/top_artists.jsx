@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Skeleton } from '@material-ui/lab'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
-import { processScroll } from './utils'
+import { processScroll, updateQuery } from './utils'
 import invariant from 'invariant'
 import PersonIcon from '@material-ui/icons/Person';
 
@@ -14,6 +14,7 @@ const TOP_ARTISTS = gql`query TopArtists($byType: String!, $byId: ID!, $cursor: 
   topArtists(byType: $byType, byId: $byId, cursor: $cursor, limit: 20) {
     entries {
       name
+      spotifyId
       genres {
         name
       }
@@ -65,15 +66,15 @@ export default ({ city, genre }) => {
       return
     }
 
-    if (artistIdx < data.artists.entries.length - 1) {
+    if (artistIdx < data.topArtists.entries.length - 1) {
       setArtistIdx(artistIdx + 1)
       return
     }
 
-    if (!loading && data.artists.cursor)
+    if (!loading && data.topArtists.cursor)
       fetchMore({
-        variables: { ...variables, cursor: data.artists.cursor },
-        updateQuery
+        variables: { ...variables, cursor: data.topArtists.cursor },
+        updateQuery: updateQuery('topArtists')
       })
     else
       setArtistIdx(-1)
@@ -86,7 +87,7 @@ export default ({ city, genre }) => {
         onScroll={processScroll(variables, 600, 'topArtists', { loading, data, fetchMore })}
       >
         {data && data.topArtists.entries.map((artist, i) => (<Fragment key={i}>
-          <ListItem alignItems="flex-start">
+          <ListItem button selected={i == artistIdx} alignItems="flex-start" onClick={() => setArtistIdx(i)}>
             <ListItemAvatar>
               {artist.images[0] ?
                 <Avatar alt={artist.name} src={artist.images[0].path} />
