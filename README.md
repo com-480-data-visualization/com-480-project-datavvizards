@@ -30,6 +30,25 @@ For the Disco Planet project we employed the dataset retrieved from [Spotify](ht
 We expect that both the general audience and more inquiring music lovers will engage with our website and learn curious insights during the interaction.
 
 
-## Screen cast
+## Screen Cast
 <a href="https://www.youtube.com/" target="_blank"><img src="./images/videocover_discoplanet.png"
 alt="Disco Planet" width="625" height="400" border="10" /></a>
+
+## Technical Setup
+Below are the steps to run our website with a local servel.
+
+Install [elixir](https://elixir-lang.org/install.html), [Node.js](https://nodejs.org/en/download/), [PostgreSQL](https://www.postgresql.org/download/), [PostGIS](https://postgis.net/install/).
+
+Clone or download the project:
+
+```
+git clone https://github.com/com-480-data-visualization/com-480-project-datavvizards.git
+```
+
+Further, in the project folder:
+* Set backend dependencies: `mix deps.get`
+* Set frontend dependencies: `npm install —prefix assets`
+* Create the database: `mix ecto.reset`
+* Run the app: `iex -S mix phx.server`
+
+The server will start on http://localhost:4000/
