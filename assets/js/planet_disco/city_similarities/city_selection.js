@@ -4,19 +4,46 @@ export class CitySelector {
     }
 
     //Remove selection from a city if one was selected
-    resetSelection = () => {
-        let prev = false;
-        if (this.selection) {
-            prev = this.selection.highlight;
-            this.selection.highlight = false
+    reset = (el) => {
+        let changed = false;
+        if (el) {
+            changed = el.highlight
+            el.selected = false;
+            el.highlight = false;
         }
+        return changed;
+    }
+
+    setSelectedElement = (d) => {
+        let prev = this.reset(this.selection);
+        this.selection = d;
+        this.addEffect(d);
         return prev;
     }
 
-    setSelection = (d) => {
-        this.resetSelection()
-        this.selection = d
-        d.highlight = true;
+    setMouseOverElement = (d) => {
+        let changed = true;
+
+        if (!this.mouseOver && !d) {
+            changed = this.deselectedAll;
+            this.deselectedAll = true;
+            return changed;
+        } else {
+            this.deselectedAll = false;
+        }
+
+        if (this.mouseOver && (!this.selection || this.mouseOver.id != this.selection.id))
+            changed = this.reset(this.mouseOver);
+        this.mouseOver = d;
+        this.addEffect(d);
+        return changed;
+    }
+
+    addEffect = (d) => {
+        if (d) {
+            d.selected = true;
+            d.highlight = true;
+        }
     }
 
     findCity = (cityId) => {
@@ -27,7 +54,6 @@ export class CitySelector {
         for (let d of this.data) {
             if (d.id == cityId) {
                 city = d;
-                this.setSelection(d);
                 break;
             }
         }

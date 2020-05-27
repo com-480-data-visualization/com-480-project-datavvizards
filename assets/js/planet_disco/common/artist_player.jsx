@@ -128,7 +128,7 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
       let [a, promise] = play();
       if (a) {
         return () => {
-          promise.then(() => a.pause()).catch((error) => console.log(error))
+          promise.then(() => a.pause()).catch((error) => error)
         }
       }
     } else {
@@ -164,7 +164,7 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
     if (a) {
       let promise = audioPromiseRef.current;
       if (promise)
-        promise.then(() => a.pause()).catch((error) => console.log(error))
+        promise.then(() => a.pause()).catch((error) => error)
     }
   }
 
@@ -180,8 +180,8 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
             {currentAudio ?
               <Fragment>
                 <div onClick={() => setPlaying(false)}>
-                  <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} />
-                  <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} />
+                  <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} playing={playing} />
+                  <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} playing={playing} />
                 </div>
               </Fragment>
               :

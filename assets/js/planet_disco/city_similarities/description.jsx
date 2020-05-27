@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Card, CardHeader, CardContent, Paper, Box, Button } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography, Paper, Box } from '@material-ui/core'
+import CityLink from './city_link'
 
 const useStyles = makeStyles((theme) => ({
     descriptionCard: {
@@ -12,11 +13,11 @@ const useStyles = makeStyles((theme) => ({
         overflowY: "auto",
         top: -20,
         height: "100%",
-        padding: 10,
+        padding: 15,
         marginBottom: -10,
     },
     descriptionContent: {
-        overflowY: "auto", 
+        overflowY: "auto",
         height: "100%",
     }
 }))
@@ -28,13 +29,26 @@ export default () => {
         <Paper className={classes.descriptionCard}>
             <Box className={classes.descriptionContentContainer}>
                 <div className={classes.descriptionContent}>
-                    <Typography variant="subtitle1">Description</Typography>
                     <Typography variant='body1'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pharetra posuere lectus, et dignissim erat bibendum a. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed fermentum dolor, et faucibus ex. Fusce a porta lorem, vitae tempus ante. Fusce metus magna, placerat et laoreet vitae, aliquam quis lectus. Sed ac ullamcorper libero, ut varius lacus. Suspendisse quis facilisis odio. In facilisis viverra mi vel tempus. Donec blandit dui vel pulvinar auctor. Aliquam in varius ligula. Nullam vestibulum auctor dui a finibus. Pellentesque commodo viverra tellus eget ultricies. Praesent mi sapien, auctor quis rutrum sit amet, venenatis a sem. Donec molestie pretium sapien eget tristique.
+                        In this visualization, we attempt to quantify cultural ties between 1000 of the most populous cities of the world. Cities are situated closer together if people in those cities listen to similar music.
+                    </Typography>
 
-                        Quisque vel quam tortor. Etiam eleifend ex et consequat ultrices. Proin faucibus diam ornare eros malesuada laoreet. Praesent auctor elit a mi scelerisque, ut scelerisque nibh ornare. Sed at metus sed ipsum luctus auctor et a est. Maecenas rhoncus turpis id diam mollis pulvinar. Proin in orci venenatis, pharetra odio a, egestas purus. Curabitur cursus eros ac volutpat lacinia.
+                    <Typography variant='body1'>
+                        <br />
+                        Some observations that may help you better understand the map:
+                    </Typography>
+                    <ul>
+                        <li><Typography variant='body1'>Cities from former French colonies (e.g., <CityLink cityId={2323}>Casablanca</CityLink>) are located closer to the French cluster.</Typography></li>
+                        <li><Typography variant='body1'><CityLink cityId={2897}>Tel Aviv</CityLink> is much closer than <CityLink cityId={1498}>Jerusalem</CityLink> to the cluster with European capitals suggesting that it is more cosmopolitan.</Typography></li>
+                        <li><Typography variant='body1'><CityLink cityId={2923}>Scarborough, Toronto</CityLink> is situated in between the Canadian and the Indian clusters. It is a popular destination for new immigrants in Toronto and is one of its most diverse areas.</Typography></li>
+                    </ul>
 
-                        Nullam ultricies, risus vitae consequat rutrum, lorem sem tristique tortor, non imperdiet dui lorem eget mi. Praesent in molestie risus, vitae volutpat sapien. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum semper pulvinar tortor. Vivamus malesuada elit nec ex mollis, non pretium eros mattis. Nunc ut purus at nunc rutrum sollicitudin et finibus enim. Aliquam erat volutpat. Nam lacinia dapibus massa, eu blandit ipsum tincidunt et. Donec eu sapien nulla. Integer at pharetra leo. Duis semper mollis elit a fringilla. Suspendisse vulputate laoreet tortor at luctus.
+                    <Typography variant='body1'>
+                        To provide additional context, we also assigned colors to the cities in such a way that if cities have similar colors, they should be nearby geographically.
+                    </Typography>
+                    <Typography variant='body1'>
+                        <br/>
+                        You can use the map below to explore the ties between the music space and the geographical one. Use the brush tool to select points of interest, and they will become highlighted in the music space.
                     </Typography>
                 </div>
             </Box>

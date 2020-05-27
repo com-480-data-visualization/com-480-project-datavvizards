@@ -21,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
   header: {
     marginBottom: theme.spacing(2)
   },
-  search: {
-    background: 'rgba(66, 66, 66)'
-  }
 }))
 
 export default () => {

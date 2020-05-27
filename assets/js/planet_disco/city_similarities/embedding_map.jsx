@@ -6,13 +6,13 @@ import * as d3 from 'd3'
 import { TextUtils } from './text_layout';
 import { PointsLayout } from './point_layout';
 import { CitySelector } from './city_selection';
-import { gql } from 'apollo-boost'
 import EmbeddingsCanvas from './embeddings_canvas'
 import { useApolloClient } from '@apollo/react-hooks'
+import { RETRIEVE_CITY_BY_ID } from './helpers'
 
 import { FragmentWormhole } from '../common/wormhole'
 import { StoreContext } from '../common/store'
-import Description  from './description'
+import Description from './description'
 
 const zoomExtent = [0.7, 32];
 const labelExtent = [1, 10];
@@ -22,21 +22,6 @@ const initialScale = 0.7;
 const geoColorScale = d3.scaleSequential().domain([0, 1])
   .interpolator(d3.interpolateSpectral);
 
-
-const RETRIEVE_CITY_BY_ID = gql`
-  query CityById($cityId: String) {
-    cities(byId: $cityId){
-      entries {
-        id,
-        city,
-        population,
-        humanCountry,
-        coord
-      }
-      cursor
-    }
-  }
-`;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -164,6 +149,7 @@ export default ({ data }) => {
       const id = textLayout.findUnderMouseId(e);
       let d = citySelector.findCity(id)
       if (d) {
+        citySelector.setSelectedElement(d)
         graphql.query({
           query: RETRIEVE_CITY_BY_ID,
           variables: { cityId: d.id }
@@ -177,12 +163,8 @@ export default ({ data }) => {
     // Listen for mouse move on the main canvas
     canvasDom.addEventListener("mousemove", (e) => {
       const id = textLayout.findUnderMouseId(e);
-      if (citySelector.findCity(id))
-        redraw()
-      else {
-        if (citySelector.resetSelection())
-          redraw();
-      }
+      let d = citySelector.findCity(id);
+      citySelector.setMouseOverElement(d) && redraw();
     });
   }
 
@@ -214,7 +196,6 @@ export default ({ data }) => {
 
   useEffect(() => {
     if (city) {
-      citySelector.resetSelection();
       handleSearch(city.id)
     }
   }, [city])
@@ -222,6 +203,7 @@ export default ({ data }) => {
   const handleSearch = (cityId) => {
     let [width, height] = dims.current;
     let city = citySelector.findCity(cityId)
+    citySelector.setSelectedElement(city)
     if (city) {
       //Zoom in on a new city
       canvas.d3.transition().duration(1000).call(
@@ -231,6 +213,8 @@ export default ({ data }) => {
           .scale(Math.max(10, currentK.current))
           .translate(-city.cx, -city.cy)
       );
+    }else{
+      redraw()
     }
   }
 

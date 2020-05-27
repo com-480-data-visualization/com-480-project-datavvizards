@@ -89,7 +89,7 @@ class Map extends Component {
       this.brush = svg.append("g");
 
       this.brush.call(d3.brush()
-        .extent([[-200, 20], [width, height]])
+        .extent([[-200, -70], [450, 350]])
         .on("start brush", updateChart)).attr("display", "none")
 
       const zoom = d3.zoom()
