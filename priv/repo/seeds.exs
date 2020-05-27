@@ -10,6 +10,10 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+System.cwd
+|> Path.join("/priv/repo/download_seeds.sh")
+|> System.cmd([])
+
 cities = Path.absname('priv/repo/seeds/embedding_points.csv')
 SpotifyTracker.Repo.query!("COPY cities(id,city,region,country,human_region,human_country,population,coord,em_coord,geohash) from '#{cities}' WITH CSV HEADER;")
 
