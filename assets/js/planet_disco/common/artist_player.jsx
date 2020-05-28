@@ -159,7 +159,7 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
             {currentAudio ?
               <Fragment>
                 <div onClick={() => setPlaying(false)}>
-                  <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} playing={playing} />
+                  <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} playing={playing} />
                   <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} playing={playing} />
                 </div>
               </Fragment>

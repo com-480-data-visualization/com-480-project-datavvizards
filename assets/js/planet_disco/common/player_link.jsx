@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     "33%": {
       transform: "translate(-100%, 0)"
     },
-    "33.000001%": {
+    "33.001%": {
       transform: "translate(100%, 0)"
     },
     "66%": {
