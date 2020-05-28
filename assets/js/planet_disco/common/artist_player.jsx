@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
 
 import { Paper } from '@material-ui/core'
-import SpotifySimpleLogin from './spotify_simple_login';
+import { useApolloClient, useQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -16,6 +17,13 @@ import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import PlayerLink from './player_link'
+
+const TRACKS = gql`query Tracks($spotifyId: String!) {
+  tracks(spotifyId: $spotifyId) {
+    name
+    url
+  }
+}`
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -58,66 +66,37 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function getAccessToken() {
-  return window.localStorage.getItem('access_token')
-}
-
 export default function ArtistPlayer({ currentArtist, fetchNext }) {
   const classes = useStyles();
+  const graphql = useApolloClient()
   const audioPromiseRef = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [currentAudio, setAudioState] = useState(null)
-  const [accessToken, setAccessToken] = useState(getAccessToken())
 
   const fetchSong = (artist) => {
     const spotifyId = artist.spotifyId;
-    const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=CH`;
-    let result = fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    })
-      .then(res => res.json())
-      .then(
-        (result) => {
-          if (result.error && result.error.status == 401) {
-            setAccessToken(null)
-            return null;
-          }
-
-          try {
-            const track = result.tracks[0];
-
-            let cover = null;
-            try {
-              cover = track.album.images[1].url;
-            } catch (err) {
-              console.log(err)
-            }
-
-            return {
-              audio: new Audio(track.preview_url),
-              artistName: artist.name,
-              artistId: spotifyId,
-              trackName: track.name,
-              trackId: track.id,
-              albumCover: cover,
-            }
-          } catch (err) {
-            console.log(err)
-            return null;
-          }
-        }
-      )
-    return result;
+    return graphql.query({query: TRACKS, variables: { spotifyId }}).then(({ data: { tracks } }) => {
+      if (tracks.length === 0) {
+        new Error('no tracks for this bastard')
+      }
+      
+      return {
+        audio: new Audio(tracks[0].url),
+        artistName: artist.name,
+        artistId: spotifyId,
+        trackName: tracks[0].name,
+        trackId: spotifyId, // I don't have track id... so
+        albumCover: artist.images[0] && artist.images[0].path
+      }
+    });
   }
 
   useEffect(() => {
-    if (currentArtist && accessToken) {
+    if (currentArtist) {
       fetchSong(currentArtist).then((result) => {
         pause();
-        setAudioState(result)
-      })
+        setAudioState(result);
+      }).catch(fetchNext);
     } else {
       setPlaying(false)
     }
@@ -213,8 +192,6 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
   return (
     <Paper className={classes.container}>
       {getPlayer()}
-      {!accessToken &&
-        <SpotifySimpleLogin />}
     </Paper>
   )
 }
