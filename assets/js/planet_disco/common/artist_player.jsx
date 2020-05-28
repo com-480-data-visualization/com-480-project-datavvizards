@@ -71,7 +71,7 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
 
   const fetchSong = (artist) => {
     const spotifyId = artist.spotifyId;
-    const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=CH`;
+    const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=from_token`;
     let result = fetch(url, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
