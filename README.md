@@ -31,7 +31,7 @@ We expect that both the general audience and more inquiring music lovers will en
 
 
 ## Screen Cast
-<a href="https://youtu.be/pZ9e4D__5Dg" target="_blank"><img src="./images/videocover_discoplanet.png"
+<a href="https://youtu.be/eI-RlNUJV3A" target="_blank"><img src="./images/videocover_discoplanet.png"
 alt="Disco Planet" width="625" height="400" border="10" /></a>
 
 ## Technical Setup
