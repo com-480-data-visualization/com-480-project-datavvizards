@@ -1,24 +1,18 @@
+
 const labelOffsetY = -8;
 
 export class TextUtils {
     static baseFontSize = 15;
 
-    constructor(ctx, hiddenCtx) {
+    constructor(ctx, transform) {
         this.ctx = ctx;
-        this.hiddenCtx = hiddenCtx;
+        this.transform = transform;
     }
 
-    atScale = (currentK) => {
-        this.currentK = currentK;
-        return this
-    }
-
-    drawBoxes = (layout) => {
-        layout.forEach(l => {
-            let color = "#" + (+l.data.id).toString(16).padStart(6, '0') //Translate city id into an rgba color
-            this.hiddenCtx.fillStyle = color
-            this.hiddenCtx.fillRect(l.topLeft.x, l.topLeft.y, l.bottomRight.x - l.topLeft.x, l.bottomRight.y - l.topLeft.y)
-        })
+    withTransform = (transform) => {
+        this.currentK = transform.k;
+        this.transform = transform;
+        return this;
     }
 
     drawLabel = (layout) => {
@@ -32,9 +26,19 @@ export class TextUtils {
         }
     }
 
-    drawLabels = (layout) => {
+    drawSurrondingBox = (layout) => {
+        this.ctx.fillRect(layout.topLeft.x,
+            layout.topLeft.y + 3 / this.currentK,
+            (layout.bottomRight.x - layout.topLeft.x),
+            (layout.bottomRight.y - layout.topLeft.y))
+    }
+
+    drawLabels = () => {
+        // this.ctx.fillStyle = 'rgba(10, 19, 32, 0.8)';
+        this.ctx.fillStyle = "#010219"
+        this.layout.forEach(this.drawSurrondingBox)
         this.ctx.fillStyle = "white";
-        layout.forEach(this.drawLabel)
+        this.layout.forEach(this.drawLabel)
     }
 
 
@@ -129,19 +133,27 @@ export class TextUtils {
                 .sort((a, b) => a.rank - b.rank))
 
         const textLayout = this.layOut(laidOut, []);
-        return this.layOut(toLayout, textLayout)
+        this.layout = this.layOut(toLayout, textLayout)
     }
 
-    //Translate an rgba value from a bounding box of a label back to a city id
-    static rgbaToId = (rgba) => {
-        return (rgba[0] << 16) + (rgba[1] << 8) + rgba[2];
+    insideTextRectangle = (point, textLayout) => {
+        return (point.x > textLayout.topLeft.x && point.x < textLayout.bottomRight.x) &&
+            (point.y > textLayout.topLeft.y && point.y < textLayout.bottomRight.y)
     }
 
     findUnderMouseId = (e) => {
         //Figure out where the mouse click occurred.
-        const mouseX = e.layerX;
-        const mouseY = e.layerY;
-        const rgba = this.hiddenCtx.getImageData(mouseX, mouseY, 1, 1).data;
-        return TextUtils.rgbaToId(rgba);
+        const mouseX = (e.layerX - this.transform.x) / this.currentK;
+        const mouseY = (e.layerY - this.transform.y) / this.currentK
+        const point = { x: mouseX, y: mouseY }
+
+        if (!this.layout)
+            return null;
+
+        const found = this.layout.find(t => this.insideTextRectangle(point, t))
+        if (found)
+            return found.data.id;
+
+        return null;
     }
 }

@@ -10,6 +10,10 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+System.cwd
+|> Path.join("/priv/repo/download_seeds.sh")
+|> System.cmd([])
+
 cities = Path.absname('priv/repo/seeds/embedding_points.csv')
 SpotifyTracker.Repo.query!("COPY cities(id,city,region,country,human_region,human_country,population,coord,em_coord,geohash) from '#{cities}' WITH CSV HEADER;")
 
@@ -27,3 +31,11 @@ SpotifyTracker.Repo.query!("COPY artist_cities(artist_id,city_id,listeners,score
 
 artist_genres = Path.absname('priv/repo/seeds/artist_genres.csv')
 SpotifyTracker.Repo.query!("COPY artist_genres(artist_id,genre_id) from '#{artist_genres}' WITH CSV HEADER;")
+
+genre_clusters = Path.absname('priv/repo/seeds/genre_clusters.csv')
+SpotifyTracker.Repo.query!("COPY genre_clusters(genre_id,master_genre_id,coord,pagerank) from '#{genre_clusters}' WITH CSV HEADER;")
+
+
+SpotifyTracker.Repo.query!("REFRESH MATERIALIZED VIEW genre_listeners")
+SpotifyTracker.Repo.query!("REFRESH MATERIALIZED VIEW city_listeners")
+SpotifyTracker.Repo.query!("REFRESH MATERIALIZED VIEW city_genre_listeners")

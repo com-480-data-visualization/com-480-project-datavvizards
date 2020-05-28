@@ -1,7 +1,8 @@
 
 export class PointsLayout {
-    constructor(ctx) {
+    constructor(ctx, transform) {
         this.ctx = ctx;
+        this.transform = transform;
     }
 
     atScale = (currentK) => {
@@ -9,23 +10,14 @@ export class PointsLayout {
         return this
     }
 
-    // drawGlow = (visible) => {
-    //     const radiusScale = 1.5;
-    //     this.hiddenCtx.fillStyle = "white";
-    //     visible.forEach((d) => {
-    //         if (d.highlight)
-    //             this.drawPoint(d, this.hiddenCtx, radiusScale)
-    //     })
-
-    //     if (isChrome) { //Only chrome seems to be able to handle it at the moment
-    //         this.ctx.save();
-    //         let filter = `blur(7px) saturate(110%) brightness(110%) `;
-    //         this.ctx.filter = filter;
-    //     }
-    //     this.ctx.drawImage(this.hiddenCanvas, 0, 0);
-    //     if (isChrome)
-    //         this.ctx.restore();
-    // }
+    drawGlow = (visible) => {
+        this.ctx.fillStyle = 'white';
+        const radiusScale = 1.5;
+        visible.forEach((d) => {
+            if (d.highlight || d.selected)
+                this.drawPoint(d, this.ctx, radiusScale)
+        })
+    }
 
     drawPoint = (d, context, radiusScale = 1) => {
         context.beginPath();
@@ -34,9 +26,10 @@ export class PointsLayout {
     }
 
     drawPoints = (visible) => {
+        this.drawGlow(visible);
         let prevColor = null
         visible.sort((d) => d.color).forEach(d => {
-            if (d.color != prevColor) {
+            if (d.color != prevColor) { //sort by color to make few state updates to the canvas
                 this.ctx.fillStyle = d.color;
                 prevColor = d.color;
             }

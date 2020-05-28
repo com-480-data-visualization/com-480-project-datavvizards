@@ -1,20 +1,17 @@
-import React, { useState, Fragment, useEffect } from 'react'
-import { Typography, List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider } from '@material-ui/core'
+import React, { Fragment, useState, useEffect } from 'react'
+import { List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { Skeleton } from '@material-ui/lab'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
-
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
+import { processScroll, updateQuery } from './utils'
+import invariant from 'invariant'
 import PersonIcon from '@material-ui/icons/Person';
 
 import ArtistPlayer from './artist_player'
 
-const TOP_ARTISTS = gql`query TopArtists($cityId: ID, $cursor: String, $sort: String, $minListeners: Int) {
-  artists(byCity: $cityId, cursor: $cursor, limit: 20, sortBy: $sort, minListeners: $minListeners) {
+const TOP_ARTISTS = gql`query TopArtists($byType: String!, $byId: ID!, $cursor: String) {
+  topArtists(byType: $byType, byId: $byId, cursor: $cursor, limit: 20) {
     entries {
       name
       spotifyId
@@ -36,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     '& li:last-child': {
       display: 'none'
-    }
+    },
+    marginBottom: theme.spacing(1),
   },
   formControl: {
     marginTop: theme.spacing(2),
@@ -49,61 +47,34 @@ const useStyles = makeStyles((theme) => ({
   },
   placeHolderAvatar: {
     color: theme.palette.secondary.main,
-    backgroundColor: theme.palette.getContrastText(theme.palette.background.paper) ,
+    backgroundColor: theme.palette.getContrastText(theme.palette.background.paper),
   }
 }))
 
-// This will be abstracted into some generic function later
-const updateQuery = (base, { fetchMoreResult }) => {
-  if (!fetchMoreResult) return base;
-  return Object.assign({}, base, {
-    artists: Object.assign({}, base.artists, {
-      entries: [...base.artists.entries, ...fetchMoreResult.artists.entries],
-      cursor: fetchMoreResult.artists.cursor
-    })
-  })
-}
-
-const trigger = 600
-let lastSort = 'score'
-
-export default ({ city }) => {
+export default ({ city, genre }) => {
+  invariant(!!city ^ !!genre, 'Either city or genre should be passed into TopArtists component')
   const classes = useStyles()
 
-  const [sortBy, setSortBy] = useState(lastSort);
-  const [minListeners, setMinListeners] = useState(100)
-
-  const variables = { cityId: city.id, sort: sortBy, minListeners: minListeners }
+  const variables = city ? { byType: 'city', byId: city.id } : { byType: 'genre', byId: genre.genreId }
   const { loading, data, fetchMore } = useQuery(TOP_ARTISTS, { variables, fetchPolicy: "cache-and-network" })
+
   const [artistIdx, setArtistIdx] = useState(0)
-
-  useEffect(() => setArtistIdx(0), [city, sortBy])
-
-  const handleSortUpdate = (event) => {
-    lastSort = event.target.value
-    setSortBy(lastSort);
-  };
-
-  const handleMinListenersUpdate = (event) => {
-    let val = event.target.value
-    if (val != "")
-      setMinListeners(+val);
-  };
+  useEffect(() => setArtistIdx(0), [city, genre])
 
   const fetchNextArtist = () => {
     if (!data) {
       return
     }
 
-    if (artistIdx < data.artists.entries.length - 1) {
+    if (artistIdx < data.topArtists.entries.length - 1) {
       setArtistIdx(artistIdx + 1)
       return
     }
 
-    if (!loading && data.artists.cursor)
+    if (!loading && data.topArtists.cursor)
       fetchMore({
-        variables: { ...variables, cursor: data.artists.cursor },
-        updateQuery
+        variables: { ...variables, cursor: data.topArtists.cursor },
+        updateQuery: updateQuery('topArtists')
       })
     else
       setArtistIdx(-1)
@@ -111,46 +82,22 @@ export default ({ city }) => {
 
   return (
     <Fragment>
-      <form className={classes.formControl}>
-        <FormControl className={classes.controlItem} >
-          <InputLabel shrink>
-            Sort by
-          </InputLabel>
-          <Select
-            value={sortBy}
-            onChange={handleSortUpdate}
-            displayEmpty
-          >
-            <MenuItem value={"listeners"}>Most popular</MenuItem>
-            <MenuItem value={"score"}>Most specific</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField className={classes.controlItem} id="standard-helperText" label="Min. listeners in the city" value={minListeners} onChange={handleMinListenersUpdate} />
-      </form>
-
       <List
         className={classes.root}
-        onScroll={(e) => {
-          const leftover = e.target.scrollHeight - e.target.clientHeight - e.target.scrollTop
-          if (leftover < trigger && !loading && data.artists.cursor) {
-            fetchMore({
-              variables: { ...variables, cursor: data.artists.cursor },
-              updateQuery
-            })
-          }
-        }}
+        onScroll={processScroll(variables, 600, 'topArtists', { loading, data, fetchMore })}
       >
-        {data && data.artists.entries.map((artist, i) => (<Fragment key={i}>
-          <ListItem selected={i == artistIdx} alignItems="flex-start" onClick={() => setArtistIdx(i)}>
+        {data && data.topArtists.entries.map((artist, i) => (<Fragment key={i}>
+          <ListItem button selected={i == artistIdx} alignItems="flex-start" onClick={() => setArtistIdx(i)}>
             <ListItemAvatar>
               {artist.images[0] ?
                 <Avatar alt={artist.name} src={artist.images[0].path} />
                 :
                 <Avatar className={classes.placeHolderAvatar} alt={artist.name}>
-                  <PersonIcon/>
+                  <PersonIcon />
                 </Avatar>
               }
             </ListItemAvatar>
+
             <ListItemText
               primary={`#${i + 1} ${artist.name}`}
               secondary={artist.genres.map(g => g.name).join(', ')}
@@ -158,7 +105,21 @@ export default ({ city }) => {
           </ListItem>
           <Divider variant="inset" component="li" />
         </Fragment>))}
+
+        {loading && new Array(20).fill(0).map((_, i) => (<Fragment key={i}>
+          <ListItem alignItems="flex-start">
+            <ListItemAvatar>
+              <Skeleton variant="circle" animation="wave" height={40} width={40} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={<Skeleton variant="rect" animation="wave" height={45} width={"100%"} />}
+            />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+        </Fragment>))}
       </List>
-      <ArtistPlayer currentArtist={(data && artistIdx > -1) ? data.artists.entries[artistIdx] : null} fetchNext={fetchNextArtist} />
-    </Fragment>)
+
+      <ArtistPlayer currentArtist={(data && artistIdx > -1) ? data.topArtists.entries[artistIdx] : null} fetchNext={fetchNextArtist} />
+    </Fragment>
+  )
 }
