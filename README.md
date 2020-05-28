@@ -31,7 +31,7 @@ We expect that both the general audience and more inquiring music lovers will en
 
 
 ## Screen Cast
-<a href="https://www.youtube.com/" target="_blank"><img src="./images/videocover_discoplanet.png"
+<a href="https://youtu.be/pZ9e4D__5Dg" target="_blank"><img src="./images/videocover_discoplanet.png"
 alt="Disco Planet" width="625" height="400" border="10" /></a>
 
 ## Technical Setup
@@ -52,3 +52,5 @@ Further, in the project folder:
 * Run the app: `iex -S mix phx.server`
 
 The server will start on http://localhost:4000/
+
+\* _Note that due to space limitations imposed by GitHub our data is located at the external storage and is accessible by the [link](https://datavvizards.s3.eu-west-3.amazonaws.com/seeds.zip). Yet, there is no need to download the data manually as it will be managed automatically during the described setup procedure._
