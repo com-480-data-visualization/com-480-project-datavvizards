@@ -32,7 +32,7 @@ We expect that both the general audience and more inquiring music lovers will en
 Check out our [process book](https://github.com/com-480-data-visualization/com-480-project-datavvizards/blob/master/process_book.pdf) for technical details or jump directly to exploring the [website](https://go.aws/3ekQWjO).
 
 ## Screen Cast
-<a href="https://youtu.be/eI-RlNUJV3A" target="_blank"><img src="./images/videocover_discoplanet.png"
+<a href="https://youtu.be/eI-RlNUJV3A" target="_blank"><img src="./images/videocover_discoplanet2.png"
 alt="Disco Planet" width="625" height="400" border="10" /></a>
 
 ## Technical Setup
