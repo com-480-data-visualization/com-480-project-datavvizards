@@ -29,6 +29,7 @@ For the Disco Planet project we employed the dataset retrieved from [Spotify](ht
 
 We expect that both the general audience and more inquiring music lovers will engage with our website and learn curious insights during the interaction.
 
+Check out our [process book](https://github.com/com-480-data-visualization/com-480-project-datavvizards/blob/master/process_book.pdf) for technical details or jump directly to exploring the [website](https://go.aws/3ekQWjO).
 
 ## Screen Cast
 <a href="https://youtu.be/eI-RlNUJV3A" target="_blank"><img src="./images/videocover_discoplanet.png"
